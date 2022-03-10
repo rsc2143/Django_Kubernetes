@@ -30,6 +30,7 @@ jobs:
         run: |
           docker build -f Dockerfile \
             -t registry.digitalocean.com/cfe-k8s-django/django-k8s-web:latest \
+            -t registry.digitalocean.com/cfe-k8s/django-k8s-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
             .
       - name: Push image
         run: |
@@ -51,7 +52,7 @@ jobs:
           POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
           EOF
-          # kubectl delete secret django-k8s-web-prod-env
+          kubectl delete secret django-k8s-web-prod-env
           kubectl create secret generic django-k8s-web-prod-env --from-env-file=web/.env.prod
       - name: Update Deployment image
         run: |
